@@ -2,11 +2,11 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import './App.css';
 
-const API_KEY = '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';
+const API_KEY = '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';
 
 function App() {
   const [tweet, setTweet] = useState('');
-  const { sentiment, setSentiment } = useState('');
+  const [sentiment, setSentiment] = useState('');
 
   async function callOpenAIAPI() {
     console.log('Calling OpenAIAPI.....');
@@ -31,7 +31,14 @@ function App() {
         Authorization: 'Bearer ' + API_KEY,
       },
       body: JSON.stringify(APIBody),
-    });
+    })
+      .then((data) => {
+        return data.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setSentiment(data.choices[0].text.trim());
+      });
   }
 
   console.log(tweet);
@@ -50,7 +57,7 @@ function App() {
         <button onClick={callOpenAIAPI}>
           Get the tweet sentiment from OpenAI API
         </button>
-        <h3>This tweet is {sentiment}</h3>
+        {sentiment !== '' ? <h3>This Tweet Is: {sentiment}</h3> : null}
       </div>
     </div>
   );
